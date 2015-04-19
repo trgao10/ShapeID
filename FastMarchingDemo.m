@@ -14,17 +14,21 @@ load([samples_path MeshName '.mat']);
 % keyboard
 
 %%% fast marching from initial points of interest
-D = G.PerformFastMarching(1575);
-G.ViewFunctionOnMesh(D,struct('mode','native'));
+D = G.PerformFastMarching(70);
+figure;G.ViewFunctionOnMesh(D,struct('mode','native'));
+
+% Subsamples = G.GeodesicFarthestPointSampling(400);
 
 %%% geodesic extraction demo
-geodesic = G.ComputeGeodesic(D, 106);
-hold on
-plot3(geodesic(1,:),geodesic(2,:),geodesic(3,:),'k-','LineWidth',2);
+% geodesic = G.ComputeGeodesic(D, 1504);
+% hold on
+% plot3(geodesic(1,:),geodesic(2,:),geodesic(3,:),'k-','LineWidth',2);
 
 %%% anisotropic fast marching
 [K,M] = G.ComputeCurvature;
-G.ViewFunctionOnMesh(K,struct('mode','native'));
+% G.ViewFunctionOnMesh(M,struct('mode','native'));
+D = G.PerformFastMarching(70,struct('W',M-min(M)));
+figure;G.ViewFunctionOnMesh(D,struct('mode','native'));
 
 
 
