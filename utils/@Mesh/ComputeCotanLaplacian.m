@@ -1,6 +1,6 @@
 function L=ComputeCotanLaplacian(G)
-F=G.F;
-V=G.V';
+F = G.F;
+V = G.V';
   % COTMATRIX computes cotangent matrix (laplacian mesh operator), (mass/area
   % terms already cancelled out)
   %

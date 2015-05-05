@@ -1,4 +1,4 @@
-function [Gx,Gy,Gz] = ComputeGradientMatrix(G)
+function [DivX,DivY,DivZ] = ComputeDivergenceMatrix(G)
 
 %%% compute gradient of domainMesh on each face
 XF = @(i)G.V(:,G.F(i,:));
@@ -25,6 +25,11 @@ dA = spdiags(1./(2*A(:)), 0, G.nF, G.nF);
 Gx = dA*sparse(I,J,V(1,:),G.nF,G.nV);
 Gy = dA*sparse(I,J,V(2,:),G.nF,G.nV);
 Gz = dA*sparse(I,J,V(3,:),G.nF,G.nV);
+
+dAf = spdiags(2*A(:),0,G.nF,G.nF);
+DivX = Gx'*dAf;
+DivY = Gy'*dAf;
+DivZ = Gz'*dAf;
 
 end
 

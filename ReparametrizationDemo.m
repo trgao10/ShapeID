@@ -4,7 +4,7 @@ path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
-Names = {'j07', 'j08', 'j09'};
+Names = {'Q18', 'A16', 't06', 'k07'};
 GroupSize = length(Names);
 
 %% setup paths
@@ -60,7 +60,7 @@ end
 %%% draw Procrustes aligned meshes
 drawMeshList(FlatMeshList, []);
 
-%%%% Step 2: TPS 2~end meshes to the first mesh
+%%%% Step 2: TPS 2 to the end meshes to the first mesh
 DeformedMeshList = cell(GroupSize,1);
 DeformedMeshList{1} = FlatMeshList{1};
 TPS_FEATURESN = DISCtoPLANE(FlatMeshList{1}.V(1:2, MeshList{1}.Aux.ObLmk)','d2p');
@@ -77,26 +77,62 @@ end
 drawMeshList(DeformedMeshList, []);
 
 %%%% Step 3: Get standard unit disk mesh
-%%%%% generate mesh from distmesh
-n = 300;
-[X,Y] = meshgrid(-1:(1/n):1);
-V = griddata(DeformedMeshList{1}.V(1,:),DeformedMeshList{1}.V(2,:),MeshList{1}.Aux.Conf,X,Y);
-% V = 1./V;
-V(isnan(V))=0;
-fd = @(p) sqrt(sum(p.^2,2))-0.95^2; %%% choose a smaller disk
-[UDVs, UDFs] = distmesh2d(fd, @huniform, 0.03, [-1,-1;1,1], MeshList{1}.Aux.UniformizationV(1:2,MeshList{1}.Aux.ObLmk)');
-% [UDVs, UDFs] = distmesh2d(fd, @hmatrix, 0.03, [-1,-1;1,1], [], X, Y, V);
-% [UDVs, UDFs] = distmesh2d(fd, @hmatrix, 0.03, [-1,-1;1,1],...
-%     MeshList{1}.Aux.UniformizationV(1:2,MeshList{1}.Aux.ObLmk)', X, Y, V);
-% [UDVs, UDFs] = distmesh2d(fd, @huniform, 0.03, [-1,-1;1,1], []);
-%%%%% generate domain mesh from first mesh
-% UDVs = DeformedMeshList{1}.V(1:2,:)';
-% UDVs(sum(UDVs.^2,2)>0.95^2,:) = [];
-% DT = delaunayTriangulation(UDVs);
-% UDFs = DT.ConnectivityList;
+% %% GMM estimate high density locations
+% % initialMu = DeformedMeshList{1}.V(:,MeshList{1}.Aux.ConfMaxInds);
+% samplePts = []';
+% for j=1:GroupSize
+%     candIdx = find(MeshList{j}.Aux.Conf>mean(MeshList{j}.Aux.Conf));
+%     samplePts = [samplePts;DeformedMeshList{j}.V(1:2,candIdx)'];
+% end
+% 
+% samplePts(arrayfun(@(idx) norm(samplePts(idx,:)),1:size(samplePts,1))>0.95,:) = [];
+% 
+% figure;
+% scatter(samplePts(:,1),samplePts(:,2),10,'g','filled');
+% axis equal;hold on;
+% 
+% [idx,C] = kmeans(samplePts,4);
+% scatter(C(:,1),C(:,2),20,'b','filled');
+% 
+% GMModel = fitgmdist(samplePts,4,...
+%     'Start',struct('mu',C,'Sigma',repmat(0.01*eye(2),1,1,4)),...
+%     'options',statset('MaxIter',400));
+% scatter(GMModel.mu(:,1),GMModel.mu(:,2),20,'r','filled');
+% ezcontour(@(x1,x2)pdf(GMModel,[x1 x2]),get(gca,{'XLim','YLim'}));
+% 
+% %%%%% generate mesh from distmesh
+% n = 300;
+% [X,Y] = meshgrid(-1:(1/n):1);
+% V = griddata(DeformedMeshList{1}.V(1,:),DeformedMeshList{1}.V(2,:),MeshList{1}.Aux.Conf,X,Y);
+% V(isnan(V))=0;
+% fd = @(p) sqrt(sum(p.^2,2))-0.9^2; %%% choose a smaller disk
+% Gaussian = @(p,mu,sigma) (exp(-sum((p-repmat(mu,size(p,1),1)).*(sigma\(p-repmat(mu,size(p,1),1))')',2))/2);
+% % Gaussian = @(p,mu,sigma) (1/sqrt(2*pi*det(sigma)))*(exp(-sum((p-repmat(mu,size(p,1),1)).*(sigma\(p-repmat(mu,size(p,1),1))')',2))/2);
+% fh = @(p) 50*(3.1-10*Gaussian(p,GMModel.mu(1,:),GMModel.Sigma(:,:,1)*20))+...
+%     50*(3.1-10*Gaussian(p,GMModel.mu(2,:),GMModel.Sigma(:,:,2)*20))+...
+%     50*(3.1-10*Gaussian(p,GMModel.mu(3,:),GMModel.Sigma(:,:,3)*20))+...
+%     50*(3.1-10*Gaussian(p,GMModel.mu(4,:),GMModel.Sigma(:,:,4)*20));
+% % fh = @(p) 50*(101-Gaussian(p,GMModel.mu(1,:),GMModel.Sigma(:,:,1)));
+% [UDVs, UDFs] = distmesh2d(fd, fh, 0.015, [-1,-1;1,1], GMModel.mu);
+% UnitDistMesh = Mesh('VF', UDVs', UDFs');
+% figure;UnitDistMesh.draw();
+
+%%%%% generate domain mesh from a fine distmesh
+fd = @(p) sqrt(sum(p.^2,2))-0.9^2; %%% choose a smaller disk
+[UDVs, UDFs] = distmesh2d(fd, fh, 0.015, [-1,-1;1,1], GMModel.mu);
 UnitDistMesh = Mesh('VF', UDVs', UDFs');
 figure;UnitDistMesh.draw();
 
+%%%%% generate domain mesh from a random mesh
+% domainIdx = floor(rand()*GroupSize)+1;
+% UDVs = DeformedMeshList{domainIdx}.V(1:2,:)';
+% UDVs(sum(UDVs.^2,2)>0.9^2,:) = [];
+% DT = delaunayTriangulation(UDVs);
+% UDFs = DT.ConnectivityList;
+% UnitDistMesh = Mesh('VF', UDVs', UDFs');
+% figure;UnitDistMesh.draw();
+
+%%
 %%%% Step 4: Re-parametrize all meshes
 % BBox = [-1.1, -1.1, 1.1, 1.1; -1.1, 1.1, -1.1, 1.1];
 ReparametrizedMeshList = cell(GroupSize,1);
@@ -139,7 +175,6 @@ for j=1:GroupSize
     ReparametrizedMeshList{j}.Write(['./meshes/reparametrized/' MeshList{j}.Aux.name '.off'], 'off', []);
 end
 
-domainMesh = DeformedMeshList{1};
-domainMesh.Write('./meshes/reparametrized/domainMesh.off', 'off', []);
+UnitDistMesh.Write('./meshes/reparametrized/domainMesh.off', 'off', []);
 
 
