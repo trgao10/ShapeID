@@ -118,10 +118,10 @@ drawMeshList(DeformedMeshList, []);
 % figure;UnitDistMesh.draw();
 
 %%%%% generate domain mesh from a fine distmesh
-fd = @(p) sqrt(sum(p.^2,2))-0.9^2; %%% choose a smaller disk
-[UDVs, UDFs] = distmesh2d(fd, fh, 0.015, [-1,-1;1,1], GMModel.mu);
-UnitDistMesh = Mesh('VF', UDVs', UDFs');
-figure;UnitDistMesh.draw();
+% fd = @(p) sqrt(sum(p.^2,2))-0.9^2; %%% choose a smaller disk
+% [UDVs, UDFs] = distmesh2d(fd, fh, 0.015, [-1,-1;1,1], GMModel.mu);
+% UnitDistMesh = Mesh('VF', UDVs', UDFs');
+% figure;UnitDistMesh.draw();
 
 %%%%% generate domain mesh from a random mesh
 % domainIdx = floor(rand()*GroupSize)+1;
