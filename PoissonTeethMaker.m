@@ -5,6 +5,7 @@ addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
 GroupLevel = 'Genus';
+numRandMeshes = 50;
 
 %% setup paths
 base_path = [pwd '/'];
@@ -30,23 +31,30 @@ load([data_path 'cPMSTinitRms.mat']);
 %% parse GroupNames
 [~,ClTable,~] = xlsread(spreadsheet_path);
 
-GroupNames = unique(ClTable(1:end,strcmpi(ClTable(1,:),GroupLevel)));
+GroupNames = unique(ClTable(2:end,strcmpi(ClTable(1,:),GroupLevel)));
 GroupNames(strcmpi(GroupNames,'NA')) = [];
 
 for j=1:length(GroupNames)
     GrouPath = ['./meshes/PoissonTeeth/' GroupNames{j} '/'];
     touch(GrouPath);
+    if (exist([GrouPath 'off/'],'dir'))
+        listing = dir([GrouPath 'off/']);
+        if (length(listing) == (numRandMeshes+2))
+            continue;
+        end
+    end
+    
     Names = ClTable(strcmpi(ClTable(1:end,strcmpi(ClTable(1,:),GroupLevel)),GroupNames{j}),1);
     GroupSize = length(Names);
     
     %%% Step 1: align all teeth with the first tooth in the group
     MeshList = cell(GroupSize,1);
-    TAXAinds = cellfun(@(x) find(strcmpi(taxa_code,x)), Names);
+    TAXAinds = cellfun(@(x) find(strcmpi(taxa_code,x)), Names, 'UniformOutput', false);
     for k=1:GroupSize
         load([sample_path taxa_code{strcmpi(taxa_code, Names{k})} '.mat']);
         G.Aux.ObLmk = GetLandmarks(G.Aux.name, LandmarksPath, [MeshesPath G.Aux.name MeshSuffix]);
         if (k>=2)
-            G.V = R{TAXAinds(1),TAXAinds(k)}*G.V;
+            G.V = R{TAXAinds{1},TAXAinds{k}}*G.V;
         end
         MeshList{k} = G;
     end
@@ -125,10 +133,9 @@ for j=1:length(GroupNames)
         end
         ReparametrizedMeshList{t} = Mesh('VF', NewMeshVertices, UDFs');
     end
-    save([GrouPath 'reparametrizedMeshes.mat'], 'MeshList', 'ReparametrizedMeshList');
+    save([GrouPath 'reparametrizedMeshes.mat'],'MeshList','ReparametrizedMeshList','domainMesh');
     
     %%%% Step 6: randomly generate 50 meshes for this species group
-    numRandMeshes = 50;
     Weights = cell(numRandMeshes,1);
     reconMeshList = cell(numRandMeshes,1);
     for k=1:numRandMeshes
@@ -147,9 +154,9 @@ for j=1:length(GroupNames)
 %     set(gcf,'Name','Randomly Interpolated Meshes');
 
     %%%% Step 7: write randomly interpolated meshes to .off files
-    touch([GrouPath 'meshes/']);
+    touch([GrouPath 'off/']);
     for k=1:numRandMeshes
-        reconMeshList{k}.Write([GrouPath 'meshes/' GroupNames{j} '_' sprintf('%02d', k) '.off'], 'off', []);
+        reconMeshList{k}.Write([GrouPath 'off/' GroupNames{j} '_' sprintf('%02d', k) '.off'], 'off', []);
     end
 end
 
