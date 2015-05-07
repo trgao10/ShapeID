@@ -88,7 +88,7 @@ reconY = [L;ones(1,domainMesh.nV)]\[DivRhoY;0];
 reconZ = [L;ones(1,domainMesh.nV)]\[DivRhoZ;0];
 
 %%% check reconstructed mesh
-reconMesh = Mesh('VF',[reconX';reconY';reconZ'],domainMesh.F);
+reconMesh = Mesh('VF',[reconX';reconY';-reconZ'],domainMesh.F);
 
 end
 
