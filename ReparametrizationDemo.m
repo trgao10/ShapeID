@@ -4,7 +4,7 @@ path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
-Names = {'Q18', 'A16', 't06', 'k07'};
+Names = {'Q18', 't06'};
 GroupSize = length(Names);
 
 %% setup paths
@@ -124,13 +124,13 @@ drawMeshList(DeformedMeshList, []);
 % figure;UnitDistMesh.draw();
 
 %%%%% generate domain mesh from a random mesh
-% domainIdx = floor(rand()*GroupSize)+1;
-% UDVs = DeformedMeshList{domainIdx}.V(1:2,:)';
-% UDVs(sum(UDVs.^2,2)>0.9^2,:) = [];
-% DT = delaunayTriangulation(UDVs);
-% UDFs = DT.ConnectivityList;
-% UnitDistMesh = Mesh('VF', UDVs', UDFs');
-% figure;UnitDistMesh.draw();
+domainIdx = floor(rand()*GroupSize)+1;
+UDVs = DeformedMeshList{domainIdx}.V(1:2,:)';
+UDVs(sum(UDVs.^2,2)>0.9^2,:) = [];
+DT = delaunayTriangulation(UDVs);
+UDFs = DT.ConnectivityList;
+UnitDistMesh = Mesh('VF', UDVs', UDFs');
+figure;UnitDistMesh.draw();
 
 %%
 %%%% Step 4: Re-parametrize all meshes
