@@ -5,7 +5,7 @@ addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
 GroupLevel = 'Genus';
-numRandMeshes = 10;
+numRandMeshes = 50;
 
 %% setup paths
 base_path = [pwd '/'];
