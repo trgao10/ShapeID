@@ -34,7 +34,7 @@ cPD = tril(cPD, -1);
 Weights = linspace(0,1,12);
 Weights([1,length(Weights)]) = [];
 
-%% collection rigid motions
+%% collection alignment rigid motions
 load([data_path 'cPMSTinitRms.mat']);
 
 %% interpolate each segment
@@ -113,6 +113,12 @@ for j=1:length(PRED)
         ReparametrizedMeshList{t} = Mesh('VF', NewMeshVertices, UDFs');
     end
     
+    [~,ObCoords] = GetLandmarks(taxa_code{strcmpi(taxa_code, MeshList{1}.Aux.name)},...
+        LandmarksPath, [MeshesPath taxa_code{strcmpi(taxa_code, MeshList{1}.Aux.name)} MeshSuffix]);
+    Vtree = kdtree_build( ReparametrizedMeshList{1}.V' );
+    ObInds = kdtree_nearest_neighbor(Vtree, ObCoords);
+    kdtree_delete(Vtree);
+    
     %%%% Step 6: generate intermediate meshes
     reconMeshList = cell(length(Weights),1);
     for k=1:length(Weights)
@@ -124,15 +130,17 @@ for j=1:length(PRED)
         disp([num2str(k) '/' num2str(length(Weights)) ' done.']);
     end
     
-    drawMeshList(reconMeshList, struct('DisplayLayout', [2,5], 'linkCamera', 'on'));
+%     drawMeshList(reconMeshList, struct('DisplayLayout', [2,5], 'linkCamera', 'on'));
     
     %%%% Step 7: write interpolated meshes to .off files
     linkPath = [PoissonMSTPath taxa_code{PRED(j)} '_' taxa_code{j} '/'];
     touch(linkPath);
     touch([linkPath 'off']);
+    touch([linkPath 'ObLmk']);
     
     for k=1:length(Weights)
         reconMeshList{k}.Write([linkPath 'off/' taxa_code{PRED(j)} '_' taxa_code{j} '_' sprintf('%02d', k) '.off'], 'off', []);
+        csvwrite([linkPath 'ObLmk/' taxa_code{PRED(j)} '_' taxa_code{j} '_' sprintf('%02d', k) '.csv'],reconMeshList{k}.V(:,ObInds)');
     end
     save([linkPath 'reparMeshes.mat'], 'MeshList', 'ReparametrizedMeshList', 'domainMesh');
     save([linkPath 'reconMeshes.mat'], 'reconMeshList', 'Weights');

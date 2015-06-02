@@ -171,6 +171,7 @@ reparametrizedMeshes = drawMeshList(ReparametrizedMeshList, []);
 set(reparametrizedMeshes, 'Name', 'Reparametrized Meshes');
 
 %% write reparametrized meshes to .off files
+touch('./meshes/reparametrized/');
 for j=1:GroupSize
     ReparametrizedMeshList{j}.Write(['./meshes/reparametrized/' MeshList{j}.Aux.name '.off'], 'off', []);
 end

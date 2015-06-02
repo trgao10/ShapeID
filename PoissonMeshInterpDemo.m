@@ -37,9 +37,15 @@ set(reparametrizedMeshes, 'Name', 'Reparametrized Meshes');
 
 domainMesh = Mesh('off', [reparametrized_path 'domainMesh.off']);
 
+%%%% compute indices of observer landmarks on the first mesh
+[~,ObCoords] = GetLandmarks(taxa_code{strcmpi(taxa_code, Names{1})},...
+        LandmarksPath, [MeshesPath taxa_code{strcmpi(taxa_code, Names{1})} MeshSuffix]);
+ Vtree = kdtree_build( MeshList{1}.V' );
+ ObInds = kdtree_nearest_neighbor(Vtree, ObCoords);
+
 %% reconstruction
 %%% focus on checking interpolation between two meshes
-WeightsFirst = linspace(0,1,20);
+WeightsFirst = linspace(0,1,5);
 reconMesh = cell(size(WeightsFirst));
 for j=1:length(WeightsFirst)
     if (j==1)
