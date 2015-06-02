@@ -45,6 +45,13 @@ for j=1:length(PRED)
     if (PRED(j) == 0)
         continue;
     end
+    linkPath = [PoissonMSTPath taxa_code{PRED(j)} '_' taxa_code{j} '/'];
+    if exist(linkPath, 'dir')
+        continue;
+    end
+    touch(linkPath);
+    touch([linkPath 'off']);
+    touch([linkPath 'ObLmk']);
     
     %%%% Step 1: load meshes and align them to each other
     G = load([sample_path taxa_code{j} '.mat']); MeshList{1} = G.G;
@@ -133,11 +140,6 @@ for j=1:length(PRED)
 %     drawMeshList(reconMeshList, struct('DisplayLayout', [2,5], 'linkCamera', 'on'));
     
     %%%% Step 7: write interpolated meshes to .off files
-    linkPath = [PoissonMSTPath taxa_code{PRED(j)} '_' taxa_code{j} '/'];
-    touch(linkPath);
-    touch([linkPath 'off']);
-    touch([linkPath 'ObLmk']);
-    
     for k=1:length(Weights)
         reconMeshList{k}.Write([linkPath 'off/' taxa_code{PRED(j)} '_' taxa_code{j} '_' sprintf('%02d', k) '.off'], 'off', []);
         csvwrite([linkPath 'ObLmk/' taxa_code{PRED(j)} '_' taxa_code{j} '_' sprintf('%02d', k) '.csv'],reconMeshList{k}.V(:,ObInds)');
