@@ -4,7 +4,7 @@ path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
-Names = {'ah16', 'Q19'};
+Names = {'x02', 'Q19'};
 % Weights = [1,1,1,1];
 GroupSize = length(Names);
 
@@ -56,7 +56,7 @@ for j=1:length(WeightsFirst)
     disp([num2str(j) '/' num2str(length(WeightsFirst)) ' done.']);
 end
 
-interpolatedMeshes = drawMeshList(reconMesh, struct('DisplayLayout',[4,5],'linkCamera','on'));
+interpolatedMeshes = drawMeshList(reconMesh, struct('DisplayLayout',[2,5],'linkCamera','on'));
 set(gcf,'Name','Interpolated Meshes');
 
 for k=1:length(WeightsFirst)

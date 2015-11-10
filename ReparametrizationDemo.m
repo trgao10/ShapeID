@@ -4,7 +4,7 @@ path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
-Names = {'ah16', 'Q19'};
+Names = {'x02', 'Q19'};
 GroupSize = length(Names);
 
 %% setup paths
@@ -177,5 +177,3 @@ for j=1:GroupSize
 end
 
 UnitDistMesh.Write('./meshes/reparametrized/domainMesh.off', 'off', []);
-
-
