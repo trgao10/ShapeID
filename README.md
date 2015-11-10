@@ -1,7 +1,7 @@
 # ShapeID
 
 --------------
-Interpolate between two meshes
+## Interpolate between two meshes ##
 
 1. Change paths and names of the meshes in ReparametrizationDemo.m, and run the script. You should see a folder "meshes/" that contains subfolder "reparametrized".
 
