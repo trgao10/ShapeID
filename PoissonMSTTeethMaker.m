@@ -62,6 +62,24 @@ for j=1:length(PRED)
     
     %%%% Step 2: Procrustes matching observer landmarks
     FlatMeshList = cell(2,1);
+    
+%     rslt = MeshList{1}.ComputeContinuousProcrustes(MeshList{2});
+%     MeshList{1}.Aux.UniformizationV = [rslt.TextureCoords1;zeros(1,MeshList{1}.nV)];
+%     MeshList{2}.Aux.UniformizationV = [rslt.TextureCoords2;zeros(1,MeshList{2}.nV)];
+%     ChunkSize = 55;
+%     ChunkIdx = @(TAXAind1,TAXAind2) ceil(((TAXAind1-1)*GroupSize+TAXAind2)/ChunkSize);
+%     load(['/media/trgao10/Work/MATLAB/ArchivedResults/PNAS/cPDist/TextureCoords1/TextureCoords1_mat_' num2str(ChunkIdx(PRED(j),j)) '.mat']);
+%     load(['/media/trgao10/Work/MATLAB/ArchivedResults/PNAS/cPDist/TextureCoords2/TextureCoords2_mat_' num2str(ChunkIdx(PRED(j),j)) '.mat']);
+%     MeshList{2}.Aux.UniformizationV = [TextureCoords1Matrix{PRED(j),j};zeros(1,MeshList{2}.nV)];
+%     MeshList{1}.Aux.UniformizationV = [TextureCoords2Matrix{PRED(j),j};zeros(1,MeshList{1}.nV)];
+
+%     K1 = MeshList{1}.ComputeCPMS(); %% curvature prescription mesh scaling
+%     D1 = K1.ComputeUniformization(struct('method','LSCM','boundary_conditions','disc'));
+%     MeshList{1}.Aux.UniformizationV = D1.V;
+%     K1 = MeshList{2}.ComputeCPMS(); %% curvature prescription mesh scaling
+%     D1 = K1.ComputeUniformization(struct('method','LSCM','boundary_conditions','disc'));
+%     MeshList{2}.Aux.UniformizationV = D1.V;    
+    
     FlatMeshList{1} = Mesh('VF', MeshList{1}.Aux.UniformizationV, MeshList{1}.F);
 
     FlatVertices = MeshList{2}.Aux.UniformizationV;
@@ -72,6 +90,7 @@ for j=1:length(PRED)
     
     %%%% Step 3: TPS G2 --> G1
     DeformedMeshList = cell(2,1);
+    %%%%%% deform 2 to 1
     DeformedMeshList{1} = FlatMeshList{1};
     TPS_FEATURESN = DISCtoPLANE(FlatMeshList{1}.V(1:2, MeshList{1}.Aux.ObLmk)','d2p');
     TPS_FEATURESM = DISCtoPLANE(FlatMeshList{2}.V(1:2, MeshList{2}.Aux.ObLmk)','d2p');
@@ -79,7 +98,16 @@ for j=1:length(PRED)
     [ftps] = TEETH_calc_tps(TPS_FEATURESM,TPS_FEATURESN-TPS_FEATURESM);
     pt = tP + TEETH_eval_tps(ftps,tP);
     DeformedMeshList{2} = Mesh('VF', DISCtoPLANE(pt,'p2d')', FlatMeshList{2}.F);
-    DeformedMeshList{2}.V(:,isnan(compl(DeformedMeshList{2}.V))) = 1;
+    DeformedMeshList{2}.V(:,isnan(compl(DeformedMeshList{2}.V))) = FlatMeshList{2}.V(:,isnan(compl(DeformedMeshList{2}.V)));
+    %%%%%% deform 1 to 2 (Plan B)
+%     DeformedMeshList{2} = FlatMeshList{2};
+%     TPS_FEATURESN = DISCtoPLANE(FlatMeshList{2}.V(1:2, MeshList{2}.Aux.ObLmk)','d2p');
+%     TPS_FEATURESM = DISCtoPLANE(FlatMeshList{1}.V(1:2, MeshList{1}.Aux.ObLmk)','d2p');
+%     tP = DISCtoPLANE(FlatMeshList{1}.V(1:2,:)','d2p');
+%     [ftps] = TEETH_calc_tps(TPS_FEATURESM,TPS_FEATURESN-TPS_FEATURESM);
+%     pt = tP + TEETH_eval_tps(ftps,tP);
+%     DeformedMeshList{1} = Mesh('VF', DISCtoPLANE(pt,'p2d')', FlatMeshList{1}.F);
+%     DeformedMeshList{1}.V(:,isnan(compl(DeformedMeshList{1}.V))) = 1;
     
     %%%% Step 4: generate domain mesh
     domainIdx = floor(rand()*2)+1;

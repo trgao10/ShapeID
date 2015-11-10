@@ -4,7 +4,7 @@ path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
-Names = {'Q18', 't06'};
+Names = {'ah16', 'Q19'};
 % Weights = [1,1,1,1];
 GroupSize = length(Names);
 
@@ -45,7 +45,7 @@ domainMesh = Mesh('off', [reparametrized_path 'domainMesh.off']);
 
 %% reconstruction
 %%% focus on checking interpolation between two meshes
-WeightsFirst = linspace(0,1,5);
+WeightsFirst = linspace(0,1,9);
 reconMesh = cell(size(WeightsFirst));
 for j=1:length(WeightsFirst)
     if (j==1)
@@ -58,6 +58,10 @@ end
 
 interpolatedMeshes = drawMeshList(reconMesh, struct('DisplayLayout',[4,5],'linkCamera','on'));
 set(gcf,'Name','Interpolated Meshes');
+
+for k=1:length(WeightsFirst)
+    reconMesh{k}.Write([reparametrized_path sprintf('%02d', k) '.off'], 'off', []);
+end
 
 %%% focus on checking one interpolated mesh
 % reconMesh = PoissonMeshInterpolation(domainMesh, MeshList, Weights);

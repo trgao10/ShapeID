@@ -4,7 +4,7 @@ path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
 %% setup parameter
-Names = {'Q18', 't06'};
+Names = {'ah16', 'Q19'};
 GroupSize = length(Names);
 
 %% setup paths
