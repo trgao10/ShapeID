@@ -14,4 +14,4 @@ This experiment is divided into four modules. The original input is a collection
 
 1. Run any pairwise registration algorithm to obtain an affinity matrix for the entire collection. This module takes a collection of meshes as input, and for each pair outputs a (dis-)similarity score.
 
-2. Embed the affinity matrix into $\mathbb{R}^2$ using MDS or diffusion maps. This module takes an affinity matrix and outputs embedding coordinates for each mesh.
+2. Embed the affinity matrix into $R^2$ using MDS or diffusion maps. This module takes an affinity matrix and outputs embedding coordinates for each mesh.
