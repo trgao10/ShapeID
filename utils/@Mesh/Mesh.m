@@ -43,6 +43,7 @@ methods
             obj.E2E=varargin{1}.E2E;
             obj.E2F=varargin{1}.E2F;
         elseif length(varargin)>=2
+            obj.Aux.filename = varargin{2};
             switch(varargin{1})
                 case 'off'
                     [obj.V,obj.F] = obj.read_off(varargin{2});
