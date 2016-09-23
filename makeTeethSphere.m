@@ -18,7 +18,7 @@ for j = 1:length(names)
     outputMeshName = [outputPath names{j} '_close.off'];
     if ~exist(outputMeshName, 'file')
         G = Mesh('off', [meshPath names{j} '.off']);
-        sTooth = G.MakeToothSphere(400, 4000, 0.98);
+        sTooth = G.MakeToothSphere(1500, 4000, 0.98);
         sTooth.Write(outputMeshName, 'off', []);
     end
 end
