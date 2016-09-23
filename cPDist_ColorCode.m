@@ -86,7 +86,7 @@ end
 
 % gscatter(Y(:,1), Y(:,2), groupLabels', colormap(colors), [], 25);
 % l= findobj(gcf,'tag','legend'); set(l,'location','northeastoutside');
-colors = colormap(colorcube(4+length(uniqueLabels)));
+	
 % gscatter(Y(:,1), Y(:,2), groupLabels', colormap(colorcube(1.05*length(uniqueLabels))), [], 25);
 % colors =  [1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1];
 % colors = [colors;colors*0.7;colors*0.5];
