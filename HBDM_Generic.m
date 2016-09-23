@@ -2,7 +2,7 @@ clear vas
 % close all
 path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
-addpath(path,'~/Documents/MATLAB/jsonlab/');
+% addpath(path,'~/Documents/MATLAB/jsonlab/');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% load disance matrix
@@ -14,7 +14,7 @@ addpath(path,'~/Documents/MATLAB/jsonlab/');
 % distMatrix = (distMatrix + distMatrix')/2;
 
 %%%%%% Option 2: HDBM
-load('data/PNAS_HDBM_7BNN.mat');
+load('data/PNAS_HBDM_cPMST_FeatureFixOff_BNN5.mat');
 % load('data/PNAS_HDBM_cPMST_FeatureFixOn_BNN3.mat')
 % load('data/PNAS_HDBM_cPComposedLASTbalance_FeatureFixOn_BNN3.mat')
 distMatrix = squareform(pdist(HDBM(:,1:end)));
