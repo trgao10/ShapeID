@@ -19,7 +19,6 @@ verb = getoptions(options, 'verb', 1);
 n = size(vertex,2);
 m = size(faces,2);
 
-
 if strcmp(method, 'fast')
     % compute the center of mass of the mesh
     G = mean(vertex,2);
@@ -41,7 +40,7 @@ if strcmp(method, 'fast')
 end
 
 options.method = 'fast';
-faces = G.PerformFacesReorientation(vertex,faces, options);
+faces = G.PerformFacesReorientation(vertex, faces, options);
 
 fring = G.ComputeFaceRing(faces);
 tag = zeros(m,1)-1;

@@ -57,12 +57,14 @@ methods
                     end
                     obj.F=varargin{3};
             end
-            obj.F2V = obj.ComputeF2V;
-            obj.V2E = obj.ComputeV2E;
-            obj.E2F = obj.ComputeE2F;
             obj.nV = size(obj.V,2);
             obj.nF = size(obj.F,2);
+            obj.F2V = obj.ComputeF2V();
+            obj.V2E = obj.ComputeV2E();
             obj.nE = size(obj.V2E,2);
+            obj.E = obj.ComputeE();
+            obj.E2F = obj.ComputeE2F();
+            
         else
             obj.F=[];
             obj.V=[];

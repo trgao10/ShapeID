@@ -16,36 +16,36 @@ distMatrix = (distMatrix + distMatrix')/2;
 %%%% MDS or diffusion maps, or any other methods
 
 %%%%%% Option 1: Diffusion Maps (or other eigen-method) on similarity matrix
-tD = distMatrix;
-tD = tD+diag(Inf(size(distMatrix, 1),1));
-
-% sD = sort(tD, 2);
-% selfTuningCol = sD(:, 6);
-% tD = tD./sqrt(selfTuningCol*selfTuningCol');
-
-% epsilon = median(min(tD, [] ,2));
-epsilon = 0.4;
-W = exp(-tD.^2/epsilon);
-D = sum(W,2);
-L = diag(1./sqrt(D))*W*diag(1./sqrt(D));
-L = (L+L')/2;
-[Udm, Ldm] = eigs(L, 4, 'LM', struct('isreal',1,'issym',1,'maxit',100,'disp',0));
-% [Udm, Ldm] = eigs(L, 4, 'LM', struct('isreal',1,'issym',1,'maxit',100,...
-%                   'v0',ones(size(distMatrix,1),1)*0.01,...
-%                   'tol',1e-20,'p',40,'disp',1));
-% dims = sum(diag(Ldm)>0);
-Udm = Udm(:,2:end);
-Ldm = Ldm(2:end, 2:end);
-Ydm = diag(1./sqrt(D))*Udm*sqrt(Ldm);
-% Ydm = Udm*sqrt(Ldm);
-% Ydm = diag(sqrt(D))*Udm*sqrt(Ldm);
-Y = Ydm;
+% tD = distMatrix;
+% tD = tD+diag(Inf(size(distMatrix, 1),1));
+% 
+% % sD = sort(tD, 2);
+% % selfTuningCol = sD(:, 6);
+% % tD = tD./sqrt(selfTuningCol*selfTuningCol');
+% 
+% % epsilon = median(min(tD, [] ,2));
+% epsilon = 0.4;
+% W = exp(-tD.^2/epsilon);
+% D = sum(W,2);
+% L = diag(1./sqrt(D))*W*diag(1./sqrt(D));
+% L = (L+L')/2;
+% [Udm, Ldm] = eigs(L, 4, 'LM', struct('isreal',1,'issym',1,'maxit',100,'disp',0));
+% % [Udm, Ldm] = eigs(L, 4, 'LM', struct('isreal',1,'issym',1,'maxit',100,...
+% %                   'v0',ones(size(distMatrix,1),1)*0.01,...
+% %                   'tol',1e-20,'p',40,'disp',1));
+% % dims = sum(diag(Ldm)>0);
+% Udm = Udm(:,2:end);
+% Ldm = Ldm(2:end, 2:end);
+% Ydm = diag(1./sqrt(D))*Udm*sqrt(Ldm);
+% % Ydm = Udm*sqrt(Ldm);
+% % Ydm = diag(sqrt(D))*Udm*sqrt(Ldm);
+% Y = Ydm;
 
 %%%%%%% Option 2: MDS on Distance Matrix
 % [mdsCoords,stress] = mdscale(distMatrix,3,'criterion','metricstress');
 % Y = mdsCoords;
-% [cmdsCoords,stress] = cmdscale(distMatrix,3);
-% Y = cmdsCoords;
+[cmdsCoords,stress] = cmdscale(distMatrix,3);
+Y = cmdsCoords;
 
 %%%% check if embedding makes sense
 DataPath = '../DATA/PNAS/';
@@ -94,10 +94,11 @@ end
 % colors =  [1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1];
 % colors = [colors;colors*0.7;colors*0.5];
 genericLevelColors = [1,0,0;     %% Adapis
+                      0.6,0.4,0; %% Altanius
                       0,0.5,0;   %% Arctocebus
                       1,0,0;     %% Cantius
                       0,0.5,0.5; %% Cheirogaleidae
-                      0,0.5,0.5; %% Cheirogaleidae
+                      0,0.5,0.5; %% Cheirogaleus
                       1,1,0;     %% Cynocephalus
                       1,0,0;     %% Donrussellia
                       0,0,0;     %% Eosimias
@@ -109,13 +110,16 @@ genericLevelColors = [1,0,0;     %% Adapis
                       0,0.5,0;   %% Loris
                       0,0,0;     %% Megaladapis
                       0,0.5,0;   %% Nycticebus
+                      0.6,0.4,0; %% Paromomys
                       0,0.5,0;   %% Perodicticus
                       0.6,0.4,0; %% Plesiadapoidea
+                      0.6,0.4,0; %% Plesiolestes
                       0,0,1;     %% Prolemur
+                      1,1,0;     %% Ptilocercus
                       0.6,0.4,0; %% Purgatorius
-                      1,1,0;     %% Scandentia
                       0.5,0,0.5; %% Tarsius
                       1,0,1;     %% Teilhardina
+                      1,1,0;     %% Tupaia
                       ];
 colors = genericLevelColors;
 % Y(:,1) = -Y(:,1);

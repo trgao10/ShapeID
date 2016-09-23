@@ -1,35 +1,49 @@
-function oBV = FindOrientedBoundaries(G)
+function [OBV,OBE]  = FindOrientedBoundaries( obj )
+% FINDORIENTEDBOUNDARIESMATLAB returns a cell array of oriented boundary 
+%  vertices (a cell for every boundary) and a cell array for boundary edges
+%  a cell for every boundary.
+%   input: TriangleMesh object
+%   output: OBV cell array with a cell for every boundary vertices
+%   output: OBE cell array with a cell for every boundary edges
+%
+% Created by Nave Zelzer on may 23 2014.
 
-[BV,BE] = G.FindBoundaries;
+[~,BE] = obj.FindBoundaries();
+if isempty(BE)
+    OBV = {};
+    OBE = {};
+    return;
+end
+OBV = cell(1,size(BE,2));
+OBE = cell(1,size(BE,2));
 
-oBV = zeros(size(BV));
-BE(BE(:,1)==0,:) = [];
-remaining = BV;
-first_vertex = BV(1);
-oBV(1) = first_vertex;
-remaining(remaining == first_vertex) = [];
-for j=2:length(oBV)
-    cands = find(BE(:)==first_vertex);
-    candRows = zeros(size(cands));
-    candCols = zeros(size(cands));
-    for k=1:length(cands)
-        if (cands(k)>length(BV))
-            candRows(k) = cands(k)-length(BV);
-            candCols(k) = 2;
-        else
-            candRows(k) = cands(k);
-            candCols(k) = 1;
-        end
+edge = BE(:,1);
+BE(:,1) = [];
+to = edge(1);
+nb = 1; % number of boundaries
+while ~isempty(BE)
+    OBV{nb} = [to, OBV{nb}];
+    OBE{nb} = [edge, OBE{nb}];
+	next = BE(:,(BE(1,:) == to | BE(2,:) == to));
+	next(:,ismember(next',edge','rows')) = [];
+    if isempty(next)
+        edge = BE(:,1);
+        to = edge(1);
+        BE(:,1) = [];
+        nb = nb+1;
+        continue;
+    else
+        next = next(:,1);
     end
-    for k=1:length(cands)
-        second_vertex = sum(BE(candRows(k),:))-first_vertex;
-        if find(remaining == second_vertex)
-            break;
-        end
-    end
-    oBV(j) = second_vertex;
-    remaining(remaining == second_vertex) = [];
-    first_vertex = second_vertex;
+	edge = next;
+    to = edge(edge ~= to);
+	BE(:,ismember(BE',edge','rows')) = [];
+end
+OBV{nb} = [to, OBV{nb}];
+OBE{nb} = [edge, OBE{nb}];
+OBV = OBV(~cellfun('isempty',OBE));
+OBE = OBE(~cellfun('isempty',OBE));
+OBV = OBV{:};
+OBE = OBE{:};
 end
 
-end
