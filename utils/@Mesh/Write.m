@@ -1,6 +1,9 @@
 function Write(G,filename,format,options)
 
-options.pointCloud = getoptions(options, 'pointCloud', 0);
+if nargin < 4
+    options = struct('pointCloud', 0);
+end
+% options.pointCloud = getoptions(options, 'pointCloud', 0);
 
 switch format
     case 'off'

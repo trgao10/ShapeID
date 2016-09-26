@@ -3,7 +3,8 @@ close all
 path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
-meshPath = '~/Work/MATLAB/DATA/PNAS/meshes/';
+% meshPath = '~/Work/MATLAB/DATA/PNAS/meshes/';
+meshPath = '~/Work/MATLAB/DATA/HDM/meshes/';
 outputPath = '~/Dropbox/sphTeethMinSurf/';
 
 dir_struct = dir(meshPath);
@@ -19,6 +20,6 @@ for j = 1:length(names)
     if ~exist(outputMeshName, 'file')
         G = Mesh('off', [meshPath names{j} '.off']);
         sTooth = G.MakeToothSphere(1500, 4000, 0.98);
-        sTooth.Write(outputMeshName, 'off', []);
+        sTooth.Write(outputMeshName, 'off');
     end
 end
