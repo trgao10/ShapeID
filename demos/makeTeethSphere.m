@@ -3,9 +3,10 @@ close all
 path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
 
-% meshPath = '~/Work/MATLAB/DATA/PNAS/meshes/';
-meshPath = '~/Work/MATLAB/DATA/HDM/meshes/';
-outputPath = '~/Dropbox/sphTeethMinSurf/';
+meshPath = '~/Work/MATLAB/DATA/PNAS/meshes/';
+% meshPath = '~/Work/MATLAB/DATA/HDM/meshes/';
+% meshPath = '~/Downloads/TheSix/';
+% outputPath = '~/Dropbox/sphTeethMinSurf/';
 
 dir_struct = dir(meshPath);
 names = cell(length(dir_struct)-2,1);

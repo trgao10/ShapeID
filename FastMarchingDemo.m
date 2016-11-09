@@ -6,6 +6,7 @@ path(path, genpath('./utils'));
 samples_path = '~/Work/MATLAB/DATA/PNAS/samples/';
 MeshName = 'k11';
 load([samples_path MeshName '.mat']);
+[BV
 % G = Mesh('off','./meshes/david-head.off');
 
 %%% pick vertices of interest

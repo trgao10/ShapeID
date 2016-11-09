@@ -2,7 +2,7 @@ clear vas
 % close all
 path(pathdef);
 addpath(path,genpath([pwd '/utils/']));
-addpath(path,'~/Documents/MATLAB/jsonlab/');
+% addpath(path,'~/Documents/MATLAB/jsonlab/');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% load disance matrix
@@ -121,7 +121,7 @@ for j=1:size(distMatrix, 1)
                            'DietaryCategory', DietaryCategory{j},...
                            'Coordinates', Y(j,:));
 end
-HBDM_EmbedCoordinates = savejson('',embeddings,struct('FloatFormat','%.8f'));
-fileID = fopen('HBDM_EmbedCoordinates.json', 'w');
-fprintf(fileID, HBDM_EmbedCoordinates);
-fclose(fileID);
+% HBDM_EmbedCoordinates = savejson('',embeddings,struct('FloatFormat','%.8f'));
+% fileID = fopen('HBDM_EmbedCoordinates.json', 'w');
+% fprintf(fileID, HBDM_EmbedCoordinates);
+% fclose(fileID);

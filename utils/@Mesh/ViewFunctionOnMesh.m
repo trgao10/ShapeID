@@ -32,8 +32,8 @@ elseif strcmpi(options.mode, 'native')
     color_data = color_value;
 end
 
-figure;
-colormap('jet');
+% figure;
+colormap('parula');
 G.draw(struct('FaceColor', 'interp', 'FaceVertexCData', color_data, 'CDataMapping', 'scaled', 'EdgeColor', 'none', 'FaceAlpha', 1, 'AmbientStrength',0.3,'SpecularStrength',0.0));
 set(gcf, 'ToolBar', 'none');
 

@@ -5,6 +5,7 @@ addpath(path,genpath([pwd '/utils/']));
 addpath(path,genpath('~/Documents/MATLAB/iso2mesh/'));
 
 dicomImgFolder = './data/AMNH-M-203297_M515-437/';
+% dicomImgFolder = '/home/trgao10/Downloads/MCZ-38316/';
 dicomImgFiles = dir(dicomImgFolder);
 numImgFiles = length(dicomImgFiles)-2;
 dicomImgFilePaths = cell(1, numImgFiles);
@@ -21,6 +22,8 @@ end
 
 X = X / max(X(:));  %%% entries of X are either 0 or 127, funny enough....
 montage(X,[0,1]);
+
+keyboard
 
 %%% apply iso2mesh to generate volumetric mesh
 squeezeX = squeeze(X);

@@ -49,7 +49,8 @@ if size(F{1},1)~=1
 end
 
 for i=minmax_face_size(1):minmax_face_size(2)
-    h(i) = patch('Vertices', V', 'Faces', cell2mat(F(face_size==i)),'FaceColor',[0.5,0.5,0.5],'CDataMapping','direct');
+    h(i) = patch('Vertices', V', 'Faces', cell2mat(F(face_size==i)),...
+        'FaceColor',[0.5,0.5,0.5],'CDataMapping','direct');
 end
 
 h = h( h>0 );
